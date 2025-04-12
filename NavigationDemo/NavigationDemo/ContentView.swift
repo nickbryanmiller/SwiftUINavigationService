@@ -7,32 +7,44 @@ import NeedleFoundation
 import SwiftUI
 
 struct ContentView: View {
+  let routerService: RouterServiceProtocol
+  
   var body: some View {
     VStack {
       Image(systemName: "globe")
         .imageScale(.large)
         .foregroundStyle(.tint)
       Text("Hello, world!")
+      Button("Slide up Screen B") {
+        routerService.navigate(ScreenBParams())
+      }
+      Button("Slide up screen 3") {
+        routerService.navigate(Screen3Params())
+      }
+      Button("Push screen 4") {
+        routerService.navigate(Screen4Params())
+      }
     }
     .padding()
   }
 }
 
-#Preview {
-  ContentView()
+
+public protocol AppComponentDependency: Dependency {
+  var routerService: RouterServiceProtocol { get }
 }
 
-typealias AppComponentDependency = MissingScreenDependency
-
-final class AppComponent: Component<AppComponentDependency> {
-  var screenBuilderegistry: ScreenBuilderRegistry<AppComponentDependency> {
-    ScreenBuilderRegistry(dependency: dependency) { dependency, screenParams in
-      let identifier = screenParams.identifier
-      
-      switch identifier {
-      default:
-        return MissingScreenBuilder(dependencies: dependency)
-      }
-    }
+public final class AppComponent: Component<AppComponentDependency>,
+ScreenBDependency,
+Screen3Dependency,
+Screen4Dependency,
+MissingScreenDependency
+{
+  public var screenBService: ScreenBService {
+    DefaultScreenBService()
+  }
+  
+  public var routerService: RouterServiceProtocol {
+    dependency.routerService
   }
 }

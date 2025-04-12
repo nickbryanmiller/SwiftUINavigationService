@@ -4,6 +4,6 @@
 // Copyright © 2025 Nicholas Miller. All rights reserved.
 
 public enum ScreenTransition {
-  case push
+  case push(isInContext: Bool)
   case slideUp
 }

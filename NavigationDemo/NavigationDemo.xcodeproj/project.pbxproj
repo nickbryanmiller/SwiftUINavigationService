@@ -115,6 +115,7 @@
 				E00064E32DA30AFD001A4330 /* Sources */,
 				E00064E42DA30AFD001A4330 /* Frameworks */,
 				E00064E52DA30AFD001A4330 /* Resources */,
+				E000655E2DAAC1A9001A4330 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -248,6 +249,26 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		E000655E2DAAC1A9001A4330 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nSOURCEKIT_LOGGING=0 && needle generate NavigationDemo/NeedleGenerated.swift NavigationDemo/\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		E00064E32DA30AFD001A4330 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -324,7 +345,7 @@
 				DEVELOPMENT_TEAM = RFG59VNY29;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -388,7 +409,7 @@
 				DEVELOPMENT_TEAM = RFG59VNY29;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

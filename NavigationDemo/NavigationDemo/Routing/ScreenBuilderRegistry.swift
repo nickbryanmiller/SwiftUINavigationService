@@ -12,12 +12,10 @@ public protocol ScreenBuilderRegistryProtocol {
   -> (any ScreenBuilding<ScreenParamsType>)?
 }
 
-public final class ScreenBuilderRegistry<DependencyType: Dependency>: ScreenBuilderRegistryProtocol {
+public final class ScreenBuilderRegistry: ScreenBuilderRegistryProtocol {
   public init(
-    dependency: DependencyType,
-    buildClosure: @escaping (DependencyType, any ScreenParams) -> some ScreenBuilding)
+    buildClosure: @escaping (any ScreenParams) -> any ScreenBuilding)
   {
-    self.dependency = dependency
     self.buildClosure = buildClosure
   }
   
@@ -25,7 +23,7 @@ public final class ScreenBuilderRegistry<DependencyType: Dependency>: ScreenBuil
     _ screenParams: ScreenParamsType)
   -> (any ScreenBuilding<ScreenParamsType>)? {
     guard
-      let builder = buildClosure(dependency, screenParams) as? (any ScreenBuilding<ScreenParamsType>)
+      let builder = buildClosure(screenParams) as? (any ScreenBuilding<ScreenParamsType>)
     else {
       return nil
     }
@@ -33,24 +31,31 @@ public final class ScreenBuilderRegistry<DependencyType: Dependency>: ScreenBuil
     return builder
   }
   
-  private let dependency: DependencyType
-  private let buildClosure: (DependencyType, any ScreenParams) -> any ScreenBuilding
+  private let buildClosure: (any ScreenParams) -> any ScreenBuilding
 }
 
-public final class MissingScreenDependency: Dependency {}
+public protocol MissingScreenDependency: Dependency {}
+
 public final class MissingScreenParams: ScreenParams {
-  public var screenTransition: ScreenTransition = .slideUp
+  public func screenTransition() -> ScreenTransition { .slideUp }
 }
 
 public final class MissingScreenBuilder: ScreenBuilder {
   public init(dependencies: MissingScreenDependency) {}
-  
-  public typealias DependecyType = MissingScreenDependency
-  public typealias ScreenParamsType = MissingScreenParams
-//  typealias ScreenType = Text
-  
-  public func build(_ params: ScreenParamsType) -> any View {
-    Text("404, this should never happen")
+    
+  public func build(_ params: MissingScreenParams) -> some View {
+    Text("404, this can be prevented with tooling")
   }
-  
+}
+
+public final class VoidScreenParams: ScreenParams {
+  public func screenTransition() -> ScreenTransition { .slideUp }
+}
+
+public final class VoidScreenBuilder: ScreenBuilder {
+  public init(dependencies: Void) {}
+    
+  public func build(_ params: VoidScreenParams) -> some View {
+    Text("404, this should never happen because Needle dependencies are not nil")
+  }
 }

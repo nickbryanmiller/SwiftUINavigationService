@@ -4,6 +4,7 @@
 // Copyright © 2025 Nicholas Miller. All rights reserved.
 
 import Combine
+import UIKit
 import SwiftUI
 
 public protocol Dismissable {
@@ -11,18 +12,26 @@ public protocol Dismissable {
 }
 
 public final class AnyDismissable: Dismissable {
-  init<ViewType: View>(
-    _ view: ViewType)
-  {}
+  init(_ viewController: UIViewController) {
+    self.viewController = viewController
+  }
   
   public func dismiss() {
-    
+    viewController.dismiss(animated: true)
   }
+  
+  // MARK: Private
+  
+  private let viewController: UIViewController
 }
 
 public struct NavigationResult<ScreenParamsType: ScreenParams> {
   let dismissable: Dismissable
   let publisher: AnyPublisher<ScreenParamsType.DataType, Never>  
+}
+
+public protocol MutableRouterServiceProtocol: AnyObject, RouterServiceProtocol {
+  func load<ViewType: View>(_ view: ViewType) -> UIViewController
 }
 
 public protocol RouterServiceProtocol {

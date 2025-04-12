@@ -6,13 +6,17 @@
 public protocol ScreenParams {
   associatedtype DataType = Void
   
-  var screenTransition: ScreenTransition { get }
+  func screenTransition() -> ScreenTransition
   static var initialData: DataType { get }
 }
 
 extension ScreenParams {
-  public var identifier: ObjectIdentifier {
+  public static var identifier: ObjectIdentifier {
     ObjectIdentifier(Self.self)
+  }
+  
+  public var identifier: ObjectIdentifier {
+    Self.identifier
   }
 }
 

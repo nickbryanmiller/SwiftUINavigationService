@@ -11,18 +11,19 @@ import SwiftUI
 
 /// Root protocol for building screens. Only to be used internally by the routing system
 public protocol ScreenBuilding<ScreenParamsType> {
-  associatedtype DependecyType: Dependency
+  associatedtype DependencyType
   associatedtype ScreenParamsType: ScreenParams
+  associatedtype ViewType: View
   
   /// Dependencies should be lazy so that we only build the dependencies when the page
   /// is about to be presented
-  init(dependencies: DependecyType)
+  init(dependencies: DependencyType)
   
   /// The screen given the params and a subject (for which the presenter can subscribe)
   func build(
     _ params: ScreenParamsType,
     subject: CurrentValueSubject<ScreenParamsType.DataType, Never>)
-  -> any View
+  -> ViewType
 }
 
 // MARK: - ScreenBuilder
@@ -30,17 +31,27 @@ public protocol ScreenBuilding<ScreenParamsType> {
 /// A screen builder for pages that do not publish data
 public protocol ScreenBuilder: ScreenBuilding
   where
-  ScreenParamsType.DataType == Void
+  ScreenParamsType: ScreenParams,
+  ScreenParamsType.DataType == Void,
+  ViewType: View
 {
-  func build(_ params: ScreenParamsType) -> any View
+  associatedtype DependencyType
+  associatedtype ScreenParamsType
+  associatedtype ViewType
+  
+  init(dependencies: DependencyType)
+  
+  func build(_ params: ScreenParamsType) -> ViewType
 }
+
+// MARK: - ScreenBuilder + Defaults
 
 /// The default implementations to conform to the root protocol
 extension ScreenBuilder {
   public func build(
     _ params: ScreenParamsType,
     subject: CurrentValueSubject<ScreenParamsType.DataType, Never>)
-  -> any View
+  -> ViewType
   {
     build(params)
   }
@@ -49,4 +60,14 @@ extension ScreenBuilder {
 // MARK: - PublishingScreenBuilder
 
 /// A screen builder for pages that do publish data
-public protocol PublishingScreenBuilder: ScreenBuilding {}
+public protocol PublishingScreenBuilder: ScreenBuilding
+where
+ScreenParamsType: ScreenParams,
+ViewType: View
+{
+  associatedtype DependencyType
+  associatedtype ScreenParamsType
+  associatedtype ViewType
+  
+  init(dependencies: DependencyType)
+}
