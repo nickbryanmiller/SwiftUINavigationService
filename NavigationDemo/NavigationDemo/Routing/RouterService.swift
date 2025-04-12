@@ -64,6 +64,7 @@ public final class RouterService: MutableRouterServiceProtocol {
   private lazy var navigationLifecycleHooks: NavigationLifecycleHooks = {
     NavigationLifecycleHooks(
       onDismiss: { [weak self] dismissType in
+        print("nbm: dismiss closure")
         switch dismissType {
         case .modal(let vc):
           self?.screenHierarchy.removeAll(where: { $0.navigationController == vc })
@@ -157,7 +158,7 @@ private final class ScreenRoot {
   }
   
   func show(screen: ScreenRoot) {
-    rootScreen.viewController.present(screen.navigationController, animated: true)
+    navigationController.present(screen.navigationController, animated: true)
   }
 }
 

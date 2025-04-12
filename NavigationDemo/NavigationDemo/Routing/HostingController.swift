@@ -20,7 +20,7 @@ public final class NavigationLifecycleHooks {
 
 public final class HostingController<Content: View>: UIHostingController<Content> {}
 
-public final class NavigationController: UINavigationController {
+public final class NavigationController: UINavigationController, UIViewControllerTransitioningDelegate {
   private let navigationLifecycleHooks: NavigationLifecycleHooks
   
   required public init(
@@ -37,11 +37,11 @@ public final class NavigationController: UINavigationController {
   }
   
   public override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-    
     if super.isBeingDismissed {
       navigationLifecycleHooks.onDismiss?(.modal(self))
     }
+    
+    super.viewDidDisappear(animated)
   }
   
   public override func popViewController(animated: Bool) -> UIViewController? {
@@ -52,6 +52,28 @@ public final class NavigationController: UINavigationController {
     }
     
     return vc
+  }
+  
+  public override func present(
+    _ viewControllerToPresent: UIViewController,
+    animated flag: Bool,
+    completion: (() -> Void)? = nil)
+  {
+    viewControllerToPresent.transitioningDelegate = self
+    super.present(viewControllerToPresent, animated: flag, completion: completion)
+  }
+  
+  public override func show(_ vc: UIViewController, sender: Any?) {
+    vc.transitioningDelegate = self
+    super.show(vc, sender: sender)
+  }
+  
+  public func animationController(
+    forDismissed dismissed: UIViewController)
+  -> (any UIViewControllerAnimatedTransitioning)?
+  {
+    print(super.isBeingDismissed)
+    return nil
   }
 }
 
